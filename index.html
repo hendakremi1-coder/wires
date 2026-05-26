@@ -11,10 +11,10 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --dawn: #FFF8F0; --card: #FFFCF8; --warm1: #FEF0DC; --warm2: #FDDCB0;
-      --sunrise: #F4845F; --sunrise-dk: #C9532A; --gold: #EF9F27; --gold-dk: #854F0B;
-      --teal: #1D9E75; --teal-lt: #E1F5EE; --teal-dk: #085041;
-      --ink: #2C1A0E; --ink2: #6B4226; --ink3: #A07050; --border: #EAD5BE;
+      --dawn:#FFF8F0; --card:#FFFCF8; --warm1:#FEF0DC; --warm2:#FDDCB0;
+      --sunrise:#F4845F; --sunrise-dk:#C9532A; --gold:#EF9F27; --gold-dk:#854F0B;
+      --teal:#1D9E75; --teal-lt:#E1F5EE; --teal-dk:#085041;
+      --ink:#2C1A0E; --ink2:#6B4226; --ink3:#A07050; --border:#EAD5BE;
     }
     body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--dawn); color: var(--ink); min-height: 100vh; }
     .dash { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem; }
@@ -53,6 +53,7 @@
     .wire-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; display: grid; grid-template-columns: 28px 1fr auto; gap: 16px; align-items: center; transition: border-color 0.15s; }
     .wire-card:hover { border-color: #E8C49A; }
     .wire-card.is-sent { opacity: 0.45; }
+    .wire-card.is-followup { border-left: 3px solid var(--sunrise); }
     .wire-num { font-size: 11px; color: var(--ink3); font-weight: 500; align-self: start; padding-top: 3px; }
     .wire-body { min-width: 0; }
     .wire-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
@@ -60,6 +61,7 @@
     .wire-amount { font-size: 1.15rem; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; white-space: nowrap; margin-left: auto; }
     .wire-meta { font-size: 12px; color: var(--ink3); }
     .missing-note { font-size: 12px; color: var(--gold-dk); background: #FAEEDA; border: 1px solid #FAC775; border-radius: 8px; padding: 4px 10px; margin-top: 6px; display: inline-flex; align-items: center; gap: 5px; }
+    .context-note { font-size: 12px; color: var(--sunrise-dk); background: #FEF0DC; border: 1px solid #FDDCB0; border-radius: 8px; padding: 4px 10px; margin-top: 6px; display: inline-flex; align-items: center; gap: 5px; }
 
     .badge { font-size: 11px; padding: 2px 9px; border-radius: 99px; font-weight: 500; }
     .b-pending { background: #E6F1FB; color: #0C447C; border: 1px solid #B5D4F4; }
@@ -67,19 +69,20 @@
     .b-missing { background: #FAEEDA; color: var(--gold-dk); border: 1px solid #FAC775; }
     .b-hold { background: var(--warm1); color: var(--ink2); border: 1px solid var(--border); }
     .b-canceled { background: #FCEBEB; color: #791F1F; border: 1px solid #F7C1C1; }
+    .b-followup { background: #FAECE7; color: var(--sunrise-dk); border: 1px solid #F5C4B3; }
 
     .wire-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
     .sst-wrap { position: relative; display: inline-flex; align-items: center; }
     .sst-wrap i { position: absolute; right: 9px; font-size: 14px; color: var(--ink3); pointer-events: none; }
     select.sst { font-size: 12px; font-weight: 500; background: var(--warm1); color: var(--ink2); border: 1px solid var(--border); border-radius: 99px; padding: 6px 30px 6px 14px; cursor: pointer; outline: none; -webkit-appearance: none; appearance: none; transition: border-color 0.15s; }
     select.sst:hover { border-color: #E8C49A; background: var(--warm2); }
-
     .cbtn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
     .cbtn:hover { border-color: var(--teal); }
     .cbtn.checked { background: var(--teal); border-color: var(--teal); }
     .cbtn svg { display: none; }
     .cbtn.checked svg { display: block; }
 
+    .divider { font-size: 11px; font-weight: 500; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.07em; margin: 1.25rem 0 10px; padding-top: 1.25rem; border-top: 1px solid var(--border); }
     .empty { text-align: center; padding: 2.5rem; color: var(--ink3); font-size: 13px; }
     .footer { margin-top: 1.75rem; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
     .footer span { font-size: 11px; color: var(--ink3); }
@@ -91,7 +94,7 @@
 
   <div class="header">
     <div class="header-top">
-      <span class="brand">RCVC Inc. — Wires</span>
+      <span class="brand">RCVC Inc. — Wires & Follow-ups</span>
       <span class="datestamp">05.18.2026</span>
     </div>
     <p class="tagline">13 wires · $236,210.61 total · UBS Willenbrock Group</p>
@@ -101,7 +104,7 @@
 
   <div class="prog-wrap">
     <div class="prog-top">
-      <span class="prog-lbl">Overall completion</span>
+      <span class="prog-lbl">Wire completion</span>
       <span class="prog-pct" id="pct">0%</span>
     </div>
     <div class="track"><div class="fill" id="bar" style="width:0%"></div></div>
@@ -118,6 +121,7 @@
     <button class="fbtn" data-f="sent">Sent</button>
     <button class="fbtn" data-f="on hold">On hold</button>
     <button class="fbtn" data-f="canceled">Canceled</button>
+    <button class="fbtn" data-f="follow-up">Follow-up needed</button>
   </div>
 
   <div class="sec-head">Wire schedule</div>
@@ -129,42 +133,43 @@
   </div>
 
 </div>
-
 <script>
 const W = [
-  {id:1,  payee:"Adrien De Leener",        amt:884.41,   bank:"Charles Schwab",           inv:"Invoice 3",                  missing:null,                                               status:"pending"},
-  {id:2,  payee:"Alessandro Guaschino",    amt:3248.00,  bank:"Fineco Bank (Italy)",       inv:"Invoice 1/2026",             missing:"Emily awaiting info from international contractor", status:"pending"},
-  {id:3,  payee:"Barbican Partners LLC",   amt:12410.66, bank:"Mercury (last 4: 4484)",    inv:"Invoice BP-2026-004",        missing:null,                                               status:"pending"},
-  {id:4,  payee:"BCL Search",             amt:50000.00, bank:"Wells Fargo",               inv:"Invoice 2026-932",           missing:null,                                               status:"pending"},
-  {id:5,  payee:"CM Advisory, Inc.",      amt:25530.00, bank:"Bank of America",           inv:"Invoice 2026-04-RCVC-AI-22", missing:null,                                               status:"pending"},
-  {id:6,  payee:"Kevin Knowles",          amt:17600.00, bank:"JPMorgan Chase",            inv:"Invoice 103",                missing:null,                                               status:"pending"},
-  {id:7,  payee:"Kraft AI Solutions LLC", amt:19355.15, bank:"JPMorgan Chase",            inv:"Invoice 14412",              missing:null,                                               status:"pending"},
-  {id:8,  payee:"Kula Technologies Inc",  amt:4300.00,  bank:"Wells Fargo",               inv:"Invoice EMLYPC1G-0001",      missing:"Address needed — Barb requested 5/18",             status:"pending"},
-  {id:9,  payee:"PAVE (Trove Info Tech)", amt:10887.50, bank:"SVB / First-Citizens Bank", inv:"Invoice 24277",              missing:"Address needed — Barb requested 5/18",             status:"pending"},
-  {id:10, payee:"Reflex IQ Holdings LTD", amt:25530.00, bank:"Community Federal Savings", inv:"Invoice INV-0010",           missing:null,                                               status:"pending"},
-  {id:11, payee:"Saragossa",              amt:43950.00, bank:"(routing on file)",         inv:"Invoices 200647–200749",     missing:null,                                               status:"pending"},
-  {id:12, payee:"Tractorbeam",            amt:6000.00,  bank:"Wells Fargo",               inv:"Invoice B3O8ZMCT-0004",      missing:null,                                               status:"sent"},
-  {id:13, payee:"Ze'ev Abrams",           amt:16514.89, bank:"Bank of America",           inv:"Invoice INV-2026-002",       missing:null,                                               status:"pending"},
+  {id:1,  payee:"Adrien De Leener",        amt:884.41,   bank:"Charles Schwab",           inv:"Invoice 3",                  missing:null, context:null, status:"pending", type:"wire"},
+  {id:2,  payee:"Alessandro Guaschino",    amt:3248.00,  bank:"Fineco Bank (Italy)",       inv:"Invoice 1/2026",             missing:"Emily awaiting info from international contractor", context:null, status:"pending", type:"wire"},
+  {id:3,  payee:"Barbican Partners LLC",   amt:12410.66, bank:"Mercury (last 4: 4484)",    inv:"Invoice BP-2026-004",        missing:null, context:null, status:"pending", type:"wire"},
+  {id:4,  payee:"BCL Search",             amt:50000.00, bank:"Wells Fargo",               inv:"Invoice 2026-932",           missing:null, context:null, status:"pending", type:"wire"},
+  {id:5,  payee:"CM Advisory, Inc.",      amt:25530.00, bank:"Bank of America",           inv:"Invoice 2026-04-RCVC-AI-22", missing:null, context:null, status:"pending", type:"wire"},
+  {id:6,  payee:"Kevin Knowles",          amt:17600.00, bank:"JPMorgan Chase",            inv:"Invoice 103",                missing:null, context:null, status:"pending", type:"wire"},
+  {id:7,  payee:"Kraft AI Solutions LLC", amt:19355.15, bank:"JPMorgan Chase",            inv:"Invoice 14412",              missing:null, context:null, status:"pending", type:"wire"},
+  {id:8,  payee:"Kula Technologies Inc",  amt:4300.00,  bank:"Wells Fargo",               inv:"Invoice EMLYPC1G-0001",      missing:"Address needed — Barb requested 5/18", context:null, status:"pending", type:"wire"},
+  {id:9,  payee:"PAVE (Trove Info Tech)", amt:10887.50, bank:"SVB / First-Citizens Bank", inv:"Invoice 24277",              missing:"Address needed — Barb requested 5/18", context:null, status:"pending", type:"wire"},
+  {id:10, payee:"Reflex IQ Holdings LTD", amt:25530.00, bank:"Community Federal Savings", inv:"Invoice INV-0010",           missing:null, context:null, status:"pending", type:"wire"},
+  {id:11, payee:"Saragossa",              amt:43950.00, bank:"(routing on file)",         inv:"Invoices 200647–200749",     missing:null, context:null, status:"pending", type:"wire"},
+  {id:12, payee:"Tractorbeam",            amt:6000.00,  bank:"Wells Fargo",               inv:"Invoice B3O8ZMCT-0004",      missing:null, context:"Wire sent 5/18 — awaiting bank confirmation. Charlie Brizz notified, following up via substitute banker.", status:"sent", type:"wire"},
+  {id:13, payee:"Ze'ev Abrams",           amt:16514.89, bank:"Bank of America",           inv:"Invoice INV-2026-002",       missing:null, context:null, status:"pending", type:"wire"},
+  {id:"F1", payee:"Tractorbeam — bank confirmation", amt:null, bank:"UBS substitute banker", inv:"Wire sent 5/18", missing:"Waiting on bank confirmation — regular banker out of office", context:"Charlie Brizz (charlie@tractorbeam.ai) is waiting. Emily reached out to substitute banker 5/22.", status:"follow-up", type:"followup"},
+  {id:"F2", payee:"Tractorbeam — 1099 confirmation", amt:56000.00, bank:"IRS / RCVC Inc.", inv:"2025 1099 — $56,000", missing:null, context:"Charlie confirmed $56k is correct. 1099 sent by mail 2/27. Separate outstanding invoice of $6k for Nov 2–9 work already covered by wire #12.", status:"follow-up", type:"followup"},
 ];
 
-const OPTS = ["pending","sent","on hold","canceled"];
+const OPTS = ["pending","sent","follow-up","on hold","canceled"];
 let filter = "all";
-const fmt = n => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-const BC = {pending:"b-pending", sent:"b-sent", "on hold":"b-hold", canceled:"b-canceled"};
+const fmt = n => n === null ? "—" : '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+const BC = {pending:"b-pending", sent:"b-sent", "follow-up":"b-followup", "on hold":"b-hold", canceled:"b-canceled"};
 
 function renderStats() {
-  const total = W.length;
-  const sent = W.filter(w => w.status === "sent").length;
+  const wires = W.filter(w => w.type === "wire");
+  const total = wires.length, sent = wires.filter(w => w.status === "sent").length;
   const miss = W.filter(w => w.missing).length;
-  const hold = W.filter(w => w.status === "on hold" || w.status === "canceled").length;
-  const totAmt = W.reduce((s,w) => s + w.amt, 0);
-  const sentAmt = W.filter(w => w.status === "sent").reduce((s,w) => s + w.amt, 0);
+  const fu = W.filter(w => w.type === "followup").length;
+  const totAmt = wires.reduce((s,w) => s + w.amt, 0);
+  const sentAmt = wires.filter(w => w.status === "sent").reduce((s,w) => s + w.amt, 0);
   const pct = Math.round(sent / total * 100);
   document.getElementById("stats").innerHTML = `
     <div class="stat"><div class="stat-label">Total wires</div><div class="stat-val v-total">${total}</div><div class="stat-sub">${fmt(totAmt)}</div></div>
     <div class="stat"><div class="stat-label">Sent</div><div class="stat-val v-sent">${sent}</div><div class="stat-sub">${fmt(sentAmt)}</div></div>
     <div class="stat"><div class="stat-label">Missing info</div><div class="stat-val v-miss">${miss}</div><div class="stat-sub">need follow-up</div></div>
-    <div class="stat"><div class="stat-label">On hold / canceled</div><div class="stat-val v-hold">${hold}</div><div class="stat-sub">&nbsp;</div></div>
+    <div class="stat"><div class="stat-label">Open follow-ups</div><div class="stat-val v-hold">${fu}</div><div class="stat-sub">action required</div></div>
   `;
   document.getElementById("bar").style.width = pct + "%";
   document.getElementById("pct").textContent = pct + "% complete";
@@ -176,13 +181,23 @@ function renderStats() {
 function renderList() {
   const el = document.getElementById("list");
   el.innerHTML = "";
-  const vis = W.filter(w => filter === "all" ? true : filter === "missing" ? !!w.missing : w.status === filter);
-  if (!vis.length) { el.innerHTML = '<div class="empty">No wires match this filter.</div>'; return; }
-  vis.forEach(w => {
+  const matchFilter = w => {
+    if (filter === "all") return true;
+    if (filter === "missing") return !!w.missing;
+    if (filter === "follow-up") return w.type === "followup" || w.status === "follow-up";
+    return w.status === filter;
+  };
+  const wires = W.filter(w => w.type === "wire" && matchFilter(w));
+  const followups = W.filter(w => w.type === "followup" && matchFilter(w));
+  if (!wires.length && !followups.length) {
+    el.innerHTML = '<div class="empty">No items match this filter.</div>'; return;
+  }
+  function makeCard(w) {
     const d = document.createElement("div");
-    d.className = "wire-card" + (w.status === "sent" ? " is-sent" : "");
+    const isFollowup = w.type === "followup";
+    d.className = "wire-card" + (w.status === "sent" ? " is-sent" : "") + (isFollowup ? " is-followup" : "");
     d.innerHTML = `
-      <span class="wire-num">#${w.id}</span>
+      <span class="wire-num">${isFollowup ? "" : "#"}${w.id}</span>
       <div class="wire-body">
         <div class="wire-top">
           <span class="wire-payee">${w.payee}</span>
@@ -192,6 +207,7 @@ function renderList() {
         </div>
         <div class="wire-meta">${w.bank} &nbsp;·&nbsp; ${w.inv}</div>
         ${w.missing ? `<div class="missing-note"><i class="ti ti-info-circle" style="font-size:13px"></i>${w.missing}</div>` : ""}
+        ${w.context ? `<div class="context-note"><i class="ti ti-message-circle" style="font-size:13px"></i>${w.context}</div>` : ""}
       </div>
       <div class="wire-right">
         <div class="sst-wrap">
@@ -200,21 +216,29 @@ function renderList() {
           </select>
           <i class="ti ti-chevron-down"></i>
         </div>
-        <button class="cbtn${w.status === "sent" ? " checked" : ""}" data-id="${w.id}" aria-label="Mark ${w.payee} as sent">
+        <button class="cbtn${w.status === "sent" ? " checked" : ""}" data-id="${w.id}" aria-label="Mark as resolved">
           <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
             <path d="M2 6.5L5.2 10L11 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
       </div>
     `;
-    el.appendChild(d);
-  });
+    return d;
+  }
+  wires.forEach(w => el.appendChild(makeCard(w)));
+  if (followups.length) {
+    const div = document.createElement("div");
+    div.className = "divider";
+    div.textContent = "Follow-up items";
+    el.appendChild(div);
+    followups.forEach(w => el.appendChild(makeCard(w)));
+  }
   el.querySelectorAll(".cbtn").forEach(b => b.onclick = () => {
-    const w = W.find(x => x.id === +b.dataset.id);
+    const w = W.find(x => String(x.id) === String(b.dataset.id));
     if (w) { w.status = w.status === "sent" ? "pending" : "sent"; render(); }
   });
   el.querySelectorAll(".sst").forEach(s => s.onchange = () => {
-    const w = W.find(x => x.id === +s.dataset.id);
+    const w = W.find(x => String(x.id) === String(s.dataset.id));
     if (w) { w.status = s.value; render(); }
   });
 }
