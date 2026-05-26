@@ -1,88 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RCVC Inc. — Wire Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --dawn: #FFF8F0; --card: #FFFCF8; --warm1: #FEF0DC; --warm2: #FDDCB0;
+      --sunrise: #F4845F; --sunrise-dk: #C9532A; --gold: #EF9F27; --gold-dk: #854F0B;
+      --teal: #1D9E75; --teal-lt: #E1F5EE; --teal-dk: #085041;
+      --ink: #2C1A0E; --ink2: #6B4226; --ink3: #A07050; --border: #EAD5BE;
+    }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--dawn); color: var(--ink); min-height: 100vh; }
+    .dash { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem; }
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --dawn-sky:#FFF8F0;
-  --warm-1:#FEF0DC;
-  --warm-2:#FDDCB0;
-  --sunrise:#F4845F;
-  --sunrise-dk:#C9532A;
-  --gold:#EF9F27;
-  --gold-dk:#854F0B;
-  --teal:#1D9E75;
-  --teal-lt:#E1F5EE;
-  --teal-dk:#085041;
-  --ink:#2C1A0E;
-  --ink2:#6B4226;
-  --ink3:#A07050;
-  --card:#FFFCF8;
-  --border:#F0DCC8;
-}
-body{font-family:var(--font-sans,'system-ui',sans-serif);background:var(--dawn-sky);color:var(--ink)}
-.dash{padding:1.5rem 0.25rem}
-.header{margin-bottom:1.5rem}
-.header-top{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:4px}
-.brand{font-size:11px;font-weight:500;color:var(--sunrise-dk);letter-spacing:0.1em;text-transform:uppercase}
-.datestamp{font-size:11px;color:var(--ink3)}
-.tagline{font-size:13px;color:var(--ink2)}
+    .header { margin-bottom: 1.75rem; }
+    .header-top { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 4px; }
+    .brand { font-size: 11px; font-weight: 500; color: var(--sunrise-dk); letter-spacing: 0.1em; text-transform: uppercase; }
+    .datestamp { font-size: 11px; color: var(--ink3); }
+    .tagline { font-size: 13px; color: var(--ink2); }
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem}
-.stat-label{font-size:11px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px}
-.stat-val{font-size:2rem;font-weight:500;line-height:1;letter-spacing:-0.02em}
-.stat-sub{font-size:12px;color:var(--ink3);margin-top:4px}
-.val-total{color:var(--ink)}
-.val-sent{color:var(--teal)}
-.val-missing{color:var(--gold-dk)}
-.val-hold{color:var(--sunrise)}
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+    @media (max-width: 600px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+    .stat { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.1rem; }
+    .stat-label { font-size: 11px; font-weight: 500; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .stat-val { font-size: 2rem; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+    .stat-sub { font-size: 12px; color: var(--ink3); margin-top: 4px; }
+    .v-total { color: var(--ink); } .v-sent { color: var(--teal); } .v-miss { color: var(--gold-dk); } .v-hold { color: var(--sunrise); }
 
-.prog-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.25rem}
-.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.prog-label{font-size:12px;color:var(--ink2);font-weight:500}
-.prog-pct{font-size:1.5rem;font-weight:500;color:var(--teal);letter-spacing:-0.02em}
-.track{height:8px;background:var(--warm-2);border-radius:99px;overflow:hidden}
-.fill{height:100%;border-radius:99px;background:var(--teal);transition:width 0.5s cubic-bezier(.4,0,.2,1)}
-.prog-meta{display:flex;justify-content:space-between;margin-top:8px}
-.prog-meta span{font-size:11px;color:var(--ink3)}
+    .prog-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.25rem; margin-bottom: 1.5rem; }
+    .prog-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .prog-lbl { font-size: 12px; color: var(--ink2); font-weight: 500; }
+    .prog-pct { font-size: 1.5rem; font-weight: 500; color: var(--teal); letter-spacing: -0.02em; }
+    .track { height: 8px; background: var(--warm2); border-radius: 99px; overflow: hidden; }
+    .fill { height: 100%; border-radius: 99px; background: var(--teal); transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+    .prog-foot { display: flex; justify-content: space-between; margin-top: 8px; }
+    .prog-foot span { font-size: 11px; color: var(--ink3); }
 
-.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
-.fbtn{font-size:11px;font-weight:500;padding:5px 12px;border-radius:99px;border:1px solid var(--border);background:var(--card);color:var(--ink2);cursor:pointer;transition:all 0.15s;letter-spacing:0.03em}
-.fbtn:hover{border-color:var(--sunrise);color:var(--sunrise-dk)}
-.fbtn.active{background:var(--sunrise);border-color:var(--sunrise);color:#fff}
+    .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+    .fbtn { font-size: 11px; font-weight: 500; padding: 5px 13px; border-radius: 99px; border: 1px solid var(--border); background: var(--card); color: var(--ink2); cursor: pointer; transition: all 0.15s; }
+    .fbtn:hover { border-color: var(--sunrise); color: var(--sunrise-dk); }
+    .fbtn.active { background: var(--sunrise); border-color: var(--sunrise); color: #fff; }
 
-.section-head{font-size:11px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px}
-.wire-list{display:flex;flex-direction:column;gap:8px}
-.wire-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem;display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;transition:border-color 0.15s}
-.wire-card:hover{border-color:#E8C49A}
-.wire-card.is-sent{opacity:0.5}
-.wire-num{font-size:11px;color:var(--ink3);padding-top:3px;font-weight:500}
-.wire-payee{font-size:14px;font-weight:500;color:var(--ink);margin-right:auto}
-.wire-amount{font-size:1.15rem;font-weight:500;color:var(--ink);letter-spacing:-0.01em;white-space:nowrap;margin-left:auto}
-.wire-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
-.wire-meta{font-size:12px;color:var(--ink3);margin-bottom:6px}
-.badge{font-size:11px;padding:2px 9px;border-radius:99px;font-weight:500}
-.b-pending{background:#E6F1FB;color:#0C447C;border:1px solid #B5D4F4}
-.b-sent{background:var(--teal-lt);color:var(--teal-dk);border:1px solid #9FE1CB}
-.b-missing{background:#FAEEDA;color:var(--gold-dk);border:1px solid #FAC775}
-.b-hold{background:var(--warm-1);color:var(--ink2);border:1px solid var(--border)}
-.b-canceled{background:#FCEBEB;color:#791F1F;border:1px solid #F7C1C1}
-.missing-note{font-size:12px;color:var(--gold-dk);background:#FAEEDA;border:1px solid #FAC775;border-radius:8px;padding:4px 10px;margin-top:6px;display:inline-flex;align-items:center;gap:5px}
-.wire-actions{display:flex;align-items:center;gap:8px;margin-top:8px}
-select.sst{font-size:12px;background:var(--warm-1);color:var(--ink2);border:1px solid var(--border);border-radius:8px;padding:4px 8px;cursor:pointer;outline:none;-webkit-appearance:none;appearance:none}
-select.sst:hover{border-color:#E8C49A}
-.cbtn{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
-.cbtn:hover{border-color:var(--teal)}
-.cbtn.checked{background:var(--teal);border-color:var(--teal)}
-.cbtn svg{display:none}
-.cbtn.checked svg{display:block}
-.empty{text-align:center;padding:2.5rem 1rem;color:var(--ink3);font-size:13px}
-.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-.footer span{font-size:11px;color:var(--ink3)}
-.footer strong{color:var(--teal)}
-</style>
+    .sec-head { font-size: 11px; font-weight: 500; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+    .wire-list { display: flex; flex-direction: column; gap: 8px; }
 
+    .wire-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; display: grid; grid-template-columns: 28px 1fr auto; gap: 16px; align-items: center; transition: border-color 0.15s; }
+    .wire-card:hover { border-color: #E8C49A; }
+    .wire-card.is-sent { opacity: 0.45; }
+    .wire-num { font-size: 11px; color: var(--ink3); font-weight: 500; align-self: start; padding-top: 3px; }
+    .wire-body { min-width: 0; }
+    .wire-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+    .wire-payee { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .wire-amount { font-size: 1.15rem; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; white-space: nowrap; margin-left: auto; }
+    .wire-meta { font-size: 12px; color: var(--ink3); }
+    .missing-note { font-size: 12px; color: var(--gold-dk); background: #FAEEDA; border: 1px solid #FAC775; border-radius: 8px; padding: 4px 10px; margin-top: 6px; display: inline-flex; align-items: center; gap: 5px; }
+
+    .badge { font-size: 11px; padding: 2px 9px; border-radius: 99px; font-weight: 500; }
+    .b-pending { background: #E6F1FB; color: #0C447C; border: 1px solid #B5D4F4; }
+    .b-sent { background: var(--teal-lt); color: var(--teal-dk); border: 1px solid #9FE1CB; }
+    .b-missing { background: #FAEEDA; color: var(--gold-dk); border: 1px solid #FAC775; }
+    .b-hold { background: var(--warm1); color: var(--ink2); border: 1px solid var(--border); }
+    .b-canceled { background: #FCEBEB; color: #791F1F; border: 1px solid #F7C1C1; }
+
+    .wire-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
+    .sst-wrap { position: relative; display: inline-flex; align-items: center; }
+    .sst-wrap i { position: absolute; right: 9px; font-size: 14px; color: var(--ink3); pointer-events: none; }
+    select.sst { font-size: 12px; font-weight: 500; background: var(--warm1); color: var(--ink2); border: 1px solid var(--border); border-radius: 99px; padding: 6px 30px 6px 14px; cursor: pointer; outline: none; -webkit-appearance: none; appearance: none; transition: border-color 0.15s; }
+    select.sst:hover { border-color: #E8C49A; background: var(--warm2); }
+
+    .cbtn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+    .cbtn:hover { border-color: var(--teal); }
+    .cbtn.checked { background: var(--teal); border-color: var(--teal); }
+    .cbtn svg { display: none; }
+    .cbtn.checked svg { display: block; }
+
+    .empty { text-align: center; padding: 2.5rem; color: var(--ink3); font-size: 13px; }
+    .footer { margin-top: 1.75rem; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+    .footer span { font-size: 11px; color: var(--ink3); }
+    .footer strong { color: var(--teal); }
+  </style>
+</head>
+<body>
 <div class="dash">
-  <h2 class="sr-only">RCVC Inc. wire payment dashboard — morning view, tracking 13 wires</h2>
+
   <div class="header">
     <div class="header-top">
       <span class="brand">RCVC Inc. — Wires</span>
@@ -93,13 +99,13 @@ select.sst:hover{border-color:#E8C49A}
 
   <div class="stats" id="stats"></div>
 
-  <div class="prog-section">
+  <div class="prog-wrap">
     <div class="prog-top">
-      <span class="prog-label">Overall completion</span>
+      <span class="prog-lbl">Overall completion</span>
       <span class="prog-pct" id="pct">0%</span>
     </div>
     <div class="track"><div class="fill" id="bar" style="width:0%"></div></div>
-    <div class="prog-meta">
+    <div class="prog-foot">
       <span id="sent-amt">$0.00 sent</span>
       <span id="remain-amt">$0.00 remaining</span>
     </div>
@@ -114,104 +120,115 @@ select.sst:hover{border-color:#E8C49A}
     <button class="fbtn" data-f="canceled">Canceled</button>
   </div>
 
-  <div class="section-head">Wire schedule</div>
+  <div class="sec-head">Wire schedule</div>
   <div class="wire-list" id="list"></div>
 
   <div class="footer">
-    <span>Barb Adams — UBS Willenbrock Group · Denver CO</span>
+    <span>Barb Adams · UBS Willenbrock Group · Denver CO</span>
     <span>Sent: <strong id="foot-sent">$0.00</strong> of $236,210.61</span>
   </div>
+
 </div>
 
 <script>
-const W=[
-  {id:1, payee:"Adrien De Leener",        amt:884.41,   bank:"Charles Schwab",           inv:"Invoice 3",                 missing:null,                                              status:"pending"},
-  {id:2, payee:"Alessandro Guaschino",    amt:3248.00,  bank:"Fineco Bank (Italy)",       inv:"Invoice 1/2026",            missing:"Emily awaiting info from international contractor",status:"pending"},
-  {id:3, payee:"Barbican Partners LLC",   amt:12410.66, bank:"Mercury (last 4: 4484)",    inv:"Invoice BP-2026-004",       missing:null,                                              status:"pending"},
-  {id:4, payee:"BCL Search",             amt:50000.00, bank:"Wells Fargo",               inv:"Invoice 2026-932",          missing:null,                                              status:"pending"},
-  {id:5, payee:"CM Advisory, Inc.",      amt:25530.00, bank:"Bank of America",           inv:"Invoice 2026-04-RCVC-AI-22",missing:null,                                              status:"pending"},
-  {id:6, payee:"Kevin Knowles",          amt:17600.00, bank:"JPMorgan Chase",            inv:"Invoice 103",               missing:null,                                              status:"pending"},
-  {id:7, payee:"Kraft AI Solutions LLC", amt:19355.15, bank:"JPMorgan Chase",            inv:"Invoice 14412",             missing:null,                                              status:"pending"},
-  {id:8, payee:"Kula Technologies Inc",  amt:4300.00,  bank:"Wells Fargo",               inv:"Invoice EMLYPC1G-0001",     missing:"Address needed — Barb requested 5/18",            status:"pending"},
-  {id:9, payee:"PAVE (Trove Info Tech)", amt:10887.50, bank:"SVB / First-Citizens Bank", inv:"Invoice 24277",             missing:"Address needed — Barb requested 5/18",            status:"pending"},
-  {id:10,payee:"Reflex IQ Holdings LTD", amt:25530.00, bank:"Community Federal Savings", inv:"Invoice INV-0010",          missing:null,                                              status:"pending"},
-  {id:11,payee:"Saragossa",              amt:43950.00, bank:"(routing on file)",         inv:"Invoices 200647–200749",    missing:null,                                              status:"pending"},
-  {id:12,payee:"Tractorbeam",            amt:6000.00,  bank:"Wells Fargo",               inv:"Invoice B3O8ZMCT-0004",     missing:null,                                              status:"sent"},
-  {id:13,payee:"Ze'ev Abrams",           amt:16514.89, bank:"Bank of America",           inv:"Invoice INV-2026-002",      missing:null,                                              status:"pending"},
+const W = [
+  {id:1,  payee:"Adrien De Leener",        amt:884.41,   bank:"Charles Schwab",           inv:"Invoice 3",                  missing:null,                                               status:"pending"},
+  {id:2,  payee:"Alessandro Guaschino",    amt:3248.00,  bank:"Fineco Bank (Italy)",       inv:"Invoice 1/2026",             missing:"Emily awaiting info from international contractor", status:"pending"},
+  {id:3,  payee:"Barbican Partners LLC",   amt:12410.66, bank:"Mercury (last 4: 4484)",    inv:"Invoice BP-2026-004",        missing:null,                                               status:"pending"},
+  {id:4,  payee:"BCL Search",             amt:50000.00, bank:"Wells Fargo",               inv:"Invoice 2026-932",           missing:null,                                               status:"pending"},
+  {id:5,  payee:"CM Advisory, Inc.",      amt:25530.00, bank:"Bank of America",           inv:"Invoice 2026-04-RCVC-AI-22", missing:null,                                               status:"pending"},
+  {id:6,  payee:"Kevin Knowles",          amt:17600.00, bank:"JPMorgan Chase",            inv:"Invoice 103",                missing:null,                                               status:"pending"},
+  {id:7,  payee:"Kraft AI Solutions LLC", amt:19355.15, bank:"JPMorgan Chase",            inv:"Invoice 14412",              missing:null,                                               status:"pending"},
+  {id:8,  payee:"Kula Technologies Inc",  amt:4300.00,  bank:"Wells Fargo",               inv:"Invoice EMLYPC1G-0001",      missing:"Address needed — Barb requested 5/18",             status:"pending"},
+  {id:9,  payee:"PAVE (Trove Info Tech)", amt:10887.50, bank:"SVB / First-Citizens Bank", inv:"Invoice 24277",              missing:"Address needed — Barb requested 5/18",             status:"pending"},
+  {id:10, payee:"Reflex IQ Holdings LTD", amt:25530.00, bank:"Community Federal Savings", inv:"Invoice INV-0010",           missing:null,                                               status:"pending"},
+  {id:11, payee:"Saragossa",              amt:43950.00, bank:"(routing on file)",         inv:"Invoices 200647–200749",     missing:null,                                               status:"pending"},
+  {id:12, payee:"Tractorbeam",            amt:6000.00,  bank:"Wells Fargo",               inv:"Invoice B3O8ZMCT-0004",      missing:null,                                               status:"sent"},
+  {id:13, payee:"Ze'ev Abrams",           amt:16514.89, bank:"Bank of America",           inv:"Invoice INV-2026-002",       missing:null,                                               status:"pending"},
 ];
-const OPTS=["pending","sent","on hold","canceled"];
-let filter="all";
-const fmt=n=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-const bc={pending:"b-pending",sent:"b-sent","on hold":"b-hold",canceled:"b-canceled"};
 
-function stats(){
-  const total=W.length,sent=W.filter(w=>w.status==="sent").length;
-  const miss=W.filter(w=>w.missing).length,hold=W.filter(w=>w.status==="on hold"||w.status==="canceled").length;
-  const totAmt=W.reduce((s,w)=>s+w.amt,0);
-  const sentAmt=W.filter(w=>w.status==="sent").reduce((s,w)=>s+w.amt,0);
-  const pct=Math.round(sent/total*100);
-  document.getElementById("stats").innerHTML=`
-    <div class="stat"><div class="stat-label">Total wires</div><div class="stat-val val-total">${total}</div><div class="stat-sub">${fmt(totAmt)}</div></div>
-    <div class="stat"><div class="stat-label">Sent</div><div class="stat-val val-sent">${sent}</div><div class="stat-sub">${fmt(sentAmt)}</div></div>
-    <div class="stat"><div class="stat-label">Missing info</div><div class="stat-val val-missing">${miss}</div><div class="stat-sub">need follow-up</div></div>
-    <div class="stat"><div class="stat-label">On hold / canceled</div><div class="stat-val val-hold">${hold}</div><div class="stat-sub">&nbsp;</div></div>
+const OPTS = ["pending","sent","on hold","canceled"];
+let filter = "all";
+const fmt = n => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+const BC = {pending:"b-pending", sent:"b-sent", "on hold":"b-hold", canceled:"b-canceled"};
+
+function renderStats() {
+  const total = W.length;
+  const sent = W.filter(w => w.status === "sent").length;
+  const miss = W.filter(w => w.missing).length;
+  const hold = W.filter(w => w.status === "on hold" || w.status === "canceled").length;
+  const totAmt = W.reduce((s,w) => s + w.amt, 0);
+  const sentAmt = W.filter(w => w.status === "sent").reduce((s,w) => s + w.amt, 0);
+  const pct = Math.round(sent / total * 100);
+  document.getElementById("stats").innerHTML = `
+    <div class="stat"><div class="stat-label">Total wires</div><div class="stat-val v-total">${total}</div><div class="stat-sub">${fmt(totAmt)}</div></div>
+    <div class="stat"><div class="stat-label">Sent</div><div class="stat-val v-sent">${sent}</div><div class="stat-sub">${fmt(sentAmt)}</div></div>
+    <div class="stat"><div class="stat-label">Missing info</div><div class="stat-val v-miss">${miss}</div><div class="stat-sub">need follow-up</div></div>
+    <div class="stat"><div class="stat-label">On hold / canceled</div><div class="stat-val v-hold">${hold}</div><div class="stat-sub">&nbsp;</div></div>
   `;
-  document.getElementById("bar").style.width=pct+"%";
-  document.getElementById("pct").textContent=pct+"% complete";
-  document.getElementById("sent-amt").textContent=fmt(sentAmt)+" sent";
-  document.getElementById("remain-amt").textContent=fmt(totAmt-sentAmt)+" remaining";
-  document.getElementById("foot-sent").textContent=fmt(sentAmt);
+  document.getElementById("bar").style.width = pct + "%";
+  document.getElementById("pct").textContent = pct + "% complete";
+  document.getElementById("sent-amt").textContent = fmt(sentAmt) + " sent";
+  document.getElementById("remain-amt").textContent = fmt(totAmt - sentAmt) + " remaining";
+  document.getElementById("foot-sent").textContent = fmt(sentAmt);
 }
 
-function list(){
-  const el=document.getElementById("list");
-  el.innerHTML="";
-  const vis=W.filter(w=>filter==="all"?true:filter==="missing"?!!w.missing:w.status===filter);
-  if(!vis.length){el.innerHTML='<div class="empty">No wires match this filter.</div>';return;}
-  vis.forEach(w=>{
-    const d=document.createElement("div");
-    d.className="wire-card"+(w.status==="sent"?" is-sent":"");
-    d.innerHTML=`
+function renderList() {
+  const el = document.getElementById("list");
+  el.innerHTML = "";
+  const vis = W.filter(w => filter === "all" ? true : filter === "missing" ? !!w.missing : w.status === filter);
+  if (!vis.length) { el.innerHTML = '<div class="empty">No wires match this filter.</div>'; return; }
+  vis.forEach(w => {
+    const d = document.createElement("div");
+    d.className = "wire-card" + (w.status === "sent" ? " is-sent" : "");
+    d.innerHTML = `
       <span class="wire-num">#${w.id}</span>
-      <div>
+      <div class="wire-body">
         <div class="wire-top">
           <span class="wire-payee">${w.payee}</span>
-          <span class="badge ${bc[w.status]||"b-pending"}">${w.status}</span>
-          ${w.missing?`<span class="badge b-missing"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:12px"></i> missing</span>`:""}
+          <span class="badge ${BC[w.status] || "b-pending"}">${w.status}</span>
+          ${w.missing ? `<span class="badge b-missing"><i class="ti ti-alert-triangle" style="font-size:11px"></i> missing</span>` : ""}
           <span class="wire-amount">${fmt(w.amt)}</span>
         </div>
         <div class="wire-meta">${w.bank} &nbsp;·&nbsp; ${w.inv}</div>
-        ${w.missing?`<div class="missing-note"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:13px"></i>${w.missing}</div>`:""}
-        <div class="wire-actions">
-          <select class="sst" data-id="${w.id}">
-            ${OPTS.map(s=>`<option value="${s}"${w.status===s?" selected":""}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join("")}
-          </select>
-        </div>
+        ${w.missing ? `<div class="missing-note"><i class="ti ti-info-circle" style="font-size:13px"></i>${w.missing}</div>` : ""}
       </div>
-      <button class="cbtn${w.status==="sent"?" checked":""}" data-id="${w.id}" aria-label="Mark ${w.payee} as sent">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5L5.2 10L11 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+      <div class="wire-right">
+        <div class="sst-wrap">
+          <select class="sst" data-id="${w.id}">
+            ${OPTS.map(s => `<option value="${s}"${w.status===s?" selected":""}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join("")}
+          </select>
+          <i class="ti ti-chevron-down"></i>
+        </div>
+        <button class="cbtn${w.status === "sent" ? " checked" : ""}" data-id="${w.id}" aria-label="Mark ${w.payee} as sent">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M2 6.5L5.2 10L11 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
     `;
     el.appendChild(d);
   });
-  el.querySelectorAll(".cbtn").forEach(b=>b.onclick=()=>{
-    const w=W.find(x=>x.id===+b.dataset.id);
-    if(w){w.status=w.status==="sent"?"pending":"sent";render();}
+  el.querySelectorAll(".cbtn").forEach(b => b.onclick = () => {
+    const w = W.find(x => x.id === +b.dataset.id);
+    if (w) { w.status = w.status === "sent" ? "pending" : "sent"; render(); }
   });
-  el.querySelectorAll(".sst").forEach(s=>s.onchange=()=>{
-    const w=W.find(x=>x.id===+s.dataset.id);
-    if(w){w.status=s.value;render();}
+  el.querySelectorAll(".sst").forEach(s => s.onchange = () => {
+    const w = W.find(x => x.id === +s.dataset.id);
+    if (w) { w.status = s.value; render(); }
   });
 }
 
-function render(){stats();list();}
+function render() { renderStats(); renderList(); }
 
-document.querySelectorAll(".fbtn").forEach(b=>b.onclick=()=>{
-  document.querySelectorAll(".fbtn").forEach(x=>x.classList.remove("active"));
+document.querySelectorAll(".fbtn").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".fbtn").forEach(x => x.classList.remove("active"));
   b.classList.add("active");
-  filter=b.dataset.f;
-  list();
+  filter = b.dataset.f;
+  renderList();
 });
 
 render();
 </script>
+</body>
+</html>
